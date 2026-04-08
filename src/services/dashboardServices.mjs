@@ -106,3 +106,62 @@ export const categoryWise = async () => {
     ]);
 };
 
+export const monthlyTrends = async () => {
+    return await Record.aggregate([
+        {
+            $group: {
+                _id: {
+                    year: { $year: "$date" },
+                    month: { $month: "$date" }
+                },
+                totalIncome: {
+                    $sum: { $cond: [{ $eq: ["$type", "income"] }, "$amount", 0] }
+                },
+                totalExpense: {
+                    $sum: { $cond: [{ $eq: ["$type", "expense"] }, "$amount", 0] }
+                }
+            }
+        },
+        { $sort: { "_id.year": 1, "_id.month": 1 } },
+        {
+            $project: {
+                _id: 0,
+                year: "$_id.year",
+                month: "$_id.month",
+                totalIncome: 1,
+                totalExpense: 1,
+                netBalance: { $subtract: ["$totalIncome", "$totalExpense"] }
+            }
+        }
+    ]);
+};
+
+export const weeklyTrends = async () => {
+    return await Record.aggregate([
+        {
+            $group: {
+                _id: {
+                    year: { $isoWeekYear: "$date" },
+                    week: { $isoWeek: "$date" }
+                },
+                totalIncome: {
+                    $sum: { $cond: [{ $eq: ["$type", "income"] }, "$amount", 0] }
+                },
+                totalExpense: {
+                    $sum: { $cond: [{ $eq: ["$type", "expense"] }, "$amount", 0] }
+                }
+            }
+        },
+        { $sort: { "_id.year": 1, "_id.week": 1 } },
+        {
+            $project: {
+                _id: 0,
+                year: "$_id.year",
+                week: "$_id.week",
+                totalIncome: 1,
+                totalExpense: 1,
+                netBalance: { $subtract: ["$totalIncome", "$totalExpense"] }
+            }
+        }
+    ]);
+};
