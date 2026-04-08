@@ -486,12 +486,12 @@
     min-width: 36px;
   }
 
-  .s200 { color: var(--post); }
-  .s201 { color: var(--post); }
-  .s400 { color: var(--put); }
+  .s200 { color: var(--get); }
+  .s201 { color: var(--get); }
+  .s400 { color: var(--delete); }
   .s401 { color: var(--delete); }
   .s403 { color: var(--delete); }
-  .s404 { color: var(--put); }
+  .s404 { color: var(--delete); }
   .s500 { color: var(--text-dim); }
 
   .response-desc { color: var(--text-muted); font-size: 12px; line-height: 1.5; }
@@ -620,6 +620,8 @@
     <a href="#dash-expense" class="nav-link"><span class="nav-badge badge-get">GET</span>/total/expense</a>
     <a href="#dash-net" class="nav-link"><span class="nav-badge badge-get">GET</span>/total</a>
     <a href="#dash-cat" class="nav-link"><span class="nav-badge badge-get">GET</span>/categories</a>
+    <a href="#dash-monthly" class="nav-link"><span class="nav-badge badge-get">GET</span>/trends/monthly</a>
+    <a href="#dash-weekly" class="nav-link"><span class="nav-badge badge-get">GET</span>/trends/weekly</a>
   </div>
 </aside>
 
@@ -1393,7 +1395,89 @@
         </div>
       </div>
     </div>
+
+    <!-- GET /trends/monthly -->
+    <div class="endpoint" id="dash-monthly">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/trends/monthly</span>
+        <span class="endpoint-summary">Monthly financial trends</span>
+        <span class="auth-pills"><span class="auth-pill pill-auth">Any authenticated</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Aggregates totals for income, expenses, and net balance for every month represented in the records.</p>
+        <div class="detail-grid">
+          <div>
+            <div class="detail-label">Example Response</div>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-lang">JSON</span></div>
+              <pre>[
+  {
+    <span class="c-key">"year"</span>: <span class="c-num">2024</span>,
+    <span class="c-key">"month"</span>: <span class="c-num">3</span>
+    <span class="c-key">"totalIncome"</span>: <span class="c-num">5000</span>,
+    <span class="c-key">"totalExpense"</span>: <span class="c-num">1800</span>,
+    <span class="c-key">"netBalance"</span>: <span class="c-num">3200</span>
+  }
+]</pre>
+            </div>
+          </div>
+          <div>
+            <div class="detail-label">Responses</div>
+            <div class="responses">
+              <div class="response-item"><span class="status-code s200">200</span><span class="response-desc">Array of <code>{ year, month, totalIncome, totalExpense, netBalance }</code></span></div>
+              <div class="response-item"><span class="status-code s401">401</span><span class="response-desc">Unauthorized</span></div>
+              <div class="response-item"><span class="status-code s500">500</span><span class="response-desc">Internal server error</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GET /categories -->
+    <div class="endpoint" id="dash-weekly">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/trends/weekly</span>
+        <span class="endpoint-summary">Weekly financial trends</span>
+        <span class="auth-pills"><span class="auth-pill pill-auth">Any authenticated</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Aggregates totals by ISO week, providing the calendar range (Monday to Sunday) for each week.</p>
+        <div class="detail-grid">
+          <div>
+            <div class="detail-label">Example Response</div>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-lang">JSON</span></div>
+              <pre>[
+  {
+    <span class="c-key">"year"</span>: <span class="c-num">2024</span>,
+    <span class="c-key">"week"</span>: <span class="c-num">12</span>,
+    <span class="c-key">"startDate"</span>: <span class="c-str">"..."</span>,
+    <span class="c-key">"endDate"</span>: <span class="c-str">"..."</span>,
+    <span class="c-key">"totalIncome"</span>: <span class="c-num">5000</span>,
+    <span class="c-key">"totalExpense"</span>: <span class="c-num">2200</span>,
+    <span class="c-key">"netBalance"</span>: <span class="c-num">2800</span>,
+  }
+]</pre>
+            </div>
+          </div>
+          <div>
+            <div class="detail-label">Responses</div>
+            <div class="responses">
+              <div class="response-item"><span class="status-code s200">200</span><span class="response-desc">Array of <code>{ category, totalIncome?, totalExpense? }</code></span></div>
+              <div class="response-item"><span class="status-code s401">401</span><span class="response-desc">Unauthorized</span></div>
+              <div class="response-item"><span class="status-code s500">500</span><span class="response-desc">Internal server error</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  
 
 </main>
 

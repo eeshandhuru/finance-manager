@@ -623,6 +623,64 @@ Returns income and expense totals broken down by category.
 
 ---
 
+### GET `/trends/monthly`
+
+Returns income and expense totals broken down by category.
+
+**Auth Required:** Yes (any role)
+
+**Response `200 OK`:** Array of monthly summary objects sorted chronologically.
+
+```json
+[
+  {
+    "year": 2024,
+    "month": 3,
+    "totalIncome": 5000,
+    "totalExpense": 3200,
+    "netBalance": 1800
+  }
+]
+```
+
+| Status | Description |
+|---|---|
+| `200 OK` | Array of monthly summaries |
+| `401 Unauthorized` | Not authenticated |
+| `500 Internal Server Error` | Server error message |
+
+---
+
+### GET `/trends/weekly`
+
+Returns financial summaries aggregated by ISO week. Includes the start and end dates for each week.
+
+**Auth Required:** Yes (any role)
+
+**Response `200 OK`:** Array of weekly summary objects.
+
+```json
+[
+  {
+    "year": 2024,
+    "week": 12,
+    "startDate": "2024-03-18T00:00:00.000Z",
+    "endDate": "2024-03-24T00:00:00.000Z",
+    "totalIncome": 1200,
+    "totalExpense": 450,
+    "netBalance": 750
+  }
+]
+```
+
+| Status | Description |
+|---|---|
+| `200 OK` | Array of weekly summaries |
+| `401 Unauthorized` | Not authenticated |
+| `500 Internal Server Error` | Server error message |
+
+---
+
 ## Data Models
 
 ### User
