@@ -10,8 +10,7 @@ export const createRecord = async (req, res) => {
             const newRecord = await recordServices.createRecord(req.body);
             return res.status(201).json({ message: "Record created successfully", record: newRecord});
         }
-    }
-    catch(err) {
+    } catch(err) {
         console.error(err.stack);
         return res.status(500).json(err.message);
     }
@@ -26,8 +25,7 @@ export const updateRecord = async (req, res) => {
             const rec = await recordServices.updateRecord(req.params.id, req.body);
             return res.status(200).json({ message: "Record updated successfully", record: rec});
         }
-    }
-    catch(err) {
+    } catch(err) {
         console.error(err.stack);
         return res.status(500).json(err.message);
     }
@@ -45,8 +43,7 @@ export const deleteRecord = async (req, res) => {
             else 
                 return res.status(404).json( "Record not found" );
         }
-    }
-    catch(err) {
+    } catch(err) {
         console.error(err.stack);
         return res.status(500).json(err.message);
     }
@@ -64,8 +61,7 @@ export const fetchRecord = async (req, res) => {
             else
                 return res.status(404).json("Record not found");
         }
-    }
-    catch(err) {
+    } catch(err) {
         console.error(err.stack);
         return res.status(500).json(err.message);
     }
@@ -89,8 +85,7 @@ export const viewRecords = async (req, res) => {
         const records = await recordServices.viewRecords(filter, limit, page);
 
         return res.status(200).json(records);
-    } 
-    catch (err) {
+    } catch (err) {
         console.error(err.stack);
         return res.status(500).json(err.message);
     }
