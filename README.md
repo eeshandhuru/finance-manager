@@ -166,6 +166,7 @@ http://localhost:4000
 | `GET` | `/total/expense` | Authenticated | Sum of all expenses |
 | `GET` | `/total` | Authenticated | Net balance (income − expenses) |
 | `GET` | `/categories` | Authenticated | Income/expense totals by category |
+| `GET` | `apiDocs.html` | None | API Documentation |
 
 ---
 
