@@ -28,9 +28,6 @@ const userSchema = new Schema({
         type: String,
         enum: roles,
         default: roles[0]
-    },
-    isActive: {
-        type: Boolean
     }
 });
 
