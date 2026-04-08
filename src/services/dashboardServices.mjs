@@ -158,6 +158,20 @@ export const weeklyTrends = async () => {
                 _id: 0,
                 year: "$_id.year",
                 week: "$_id.week",
+                startDate: { 
+                    $dateFromParts: { 
+                        isoWeekYear: "$_id.year", 
+                        isoWeek: "$_id.week", 
+                        isoDayOfWeek: 1 // Monday
+                    } 
+                },
+                endDate: { 
+                    $dateFromParts: { 
+                        isoWeekYear: "$_id.year", 
+                        isoWeek: "$_id.week", 
+                        isoDayOfWeek: 7 // Sunday
+                    } 
+                },
                 totalIncome: 1,
                 totalExpense: 1,
                 netBalance: { $subtract: ["$totalIncome", "$totalExpense"] }
