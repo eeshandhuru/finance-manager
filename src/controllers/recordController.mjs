@@ -82,8 +82,8 @@ export const viewRecords = async (req, res) => {
         if (startDate || endDate) {
             filter.date = {};
 
-            if (startDate) filter.date.$gte = Date(startDate);
-            if (endDate) filter.date.$lte = Date(endDate);
+            if (startDate) filter.date.$gte = (new Date(startDate)).getTime();
+            if (endDate) filter.date.$lte = (new Date(endDate)).getTime();
         }
 
         const records = await recordServices.viewRecords(filter, limit, page);
