@@ -117,6 +117,17 @@ npm run dev
 
 The server will start on `http://localhost:<PORT>`.
 
+### Admin credentials
+
+Use these sample admin credentials to test all admin API:
+
+```
+{
+  "email_id": "testadmin@test.com",
+  "password": "Admin123"
+}
+```
+
 ---
 
 ## API Overview
@@ -128,6 +139,8 @@ All endpoints are documented in detail in [`API_DOCUMENTATION.md`](./API_DOCUMEN
 ```
 http://localhost:4000
 ```
+
+
 
 ### Route Summary
 
