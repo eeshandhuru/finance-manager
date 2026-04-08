@@ -6,7 +6,7 @@ The Finance Manager API is a RESTful backend built with Express.js and MongoDB. 
 
 **Localhost Base URL:** `http://localhost:<PORT>`
 
-**Vercel Base URL:** `https://finance-manager-zeta-weld.vercel.app/`
+**Online URL:** `https://finance-manager-n03p.onrender.com`
 
 **Authentication:** JWT-based, delivered via HTTP-only cookies (`token`). Protected routes require a valid, non-expired token cookie.
 
