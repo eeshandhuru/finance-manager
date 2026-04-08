@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finance Manager — API Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0d0f12;
+    --surface: #13161b;
+    --surface2: #1a1e25;
+    --border: #262c36;
+    --border-light: #2e3744;
+    --text: #e4e8ef;
+    --text-muted: #6b7a8f;
+    --text-dim: #3d4a5c;
+    --accent: #4fffb0;
+    --accent-dim: rgba(79,255,176,0.12);
+    --accent-glow: rgba(79,255,176,0.05);
+    --get: #5b9cf6;
+    --get-bg: rgba(91,156,246,0.1);
+    --post: #4fffb0;
+    --post-bg: rgba(79,255,176,0.1);
+    --put: #f5a623;
+    --put-bg: rgba(245,166,35,0.1);
+    --delete: #ff5f72;
+    --delete-bg: rgba(255,95,114,0.1);
+    --admin: #c084fc;
+    --analyst: #5b9cf6;
+    --viewer: #4fffb0;
+    --public: #f5a623;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-body: 'DM Sans', sans-serif;
+    --font-display: 'DM Serif Display', serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.6;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  aside {
+    width: 260px;
+    min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: 28px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 20px;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .logo span {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .sidebar-section {
+    padding: 16px 0 8px;
+  }
+
+  .sidebar-section-title {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 0 20px 8px;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 20px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 400;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--accent-glow);
+    border-left-color: var(--border-light);
+  }
+
+  .nav-link.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border-left-color: var(--accent);
+  }
+
+  .nav-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .badge-get { color: var(--get); background: var(--get-bg); }
+  .badge-post { color: var(--post); background: var(--post-bg); }
+  .badge-put { color: var(--put); background: var(--put-bg); }
+  .badge-delete { color: var(--delete); background: var(--delete-bg); }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    overflow-x: hidden;
+    padding: 48px 56px;
+    max-width: 900px;
+  }
+
+  /* HERO */
+  .hero {
+    margin-bottom: 60px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: 48px;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-desc {
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 480px;
+  }
+
+  .meta-item {
+    background: var(--surface);
+    padding: 14px 16px;
+  }
+
+  .meta-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .meta-value {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 72px;
+    scroll-margin-top: 32px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .section-subtitle {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  /* ENDPOINT CARD */
+  .endpoint {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .endpoint:hover { border-color: var(--border-light); }
+
+  .endpoint-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .method {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .method-get { color: var(--get); background: var(--get-bg); }
+  .method-post { color: var(--post); background: var(--post-bg); }
+  .method-put { color: var(--put); background: var(--put-bg); }
+  .method-delete { color: var(--delete); background: var(--delete-bg); }
+
+  .endpoint-path {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .endpoint-summary {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-left: auto;
+    margin-right: 16px;
+  }
+
+  .auth-pills {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .auth-pill {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+
+  .pill-admin { color: var(--admin); background: rgba(192,132,252,0.12); }
+  .pill-analyst { color: var(--analyst); background: rgba(91,156,246,0.12); }
+  .pill-viewer { color: var(--viewer); background: rgba(79,255,176,0.12); }
+  .pill-public { color: var(--public); background: rgba(245,166,35,0.12); }
+  .pill-auth { color: var(--text-muted); background: var(--surface2); }
+
+  .chevron {
+    color: var(--text-dim);
+    font-size: 12px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .endpoint.open .chevron { transform: rotate(90deg); }
+
+  .endpoint-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 20px;
+  }
+
+  .endpoint.open .endpoint-body { display: block; }
+
+  /* DETAIL SECTIONS */
+  .detail-desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .detail-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  .param-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .param-table th {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: left;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  .param-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .param-table tr:last-child td { border-bottom: none; }
+
+  .param-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  .param-type {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .param-req {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--delete);
+  }
+
+  .param-opt {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .param-desc { color: var(--text-muted); }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: #080a0d;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+
+  .code-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .code-lang {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .code-block pre {
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--text);
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .c-key { color: #7dd3fc; }
+  .c-str { color: #86efac; }
+  .c-num { color: #fdba74; }
+  .c-bool { color: #c084fc; }
+  .c-null { color: var(--text-dim); }
+  .c-comment { color: var(--text-dim); font-style: italic; }
+
+  /* RESPONSES */
+  .responses { margin-top: 20px; }
+
+  .response-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .response-item:last-child { border-bottom: none; }
+
+  .status-code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 36px;
+  }
+
+  .s200 { color: var(--post); }
+  .s201 { color: var(--post); }
+  .s400 { color: var(--put); }
+  .s401 { color: var(--delete); }
+  .s403 { color: var(--delete); }
+  .s404 { color: var(--put); }
+  .s500 { color: var(--text-dim); }
+
+  .response-desc { color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+
+  /* OVERVIEW CARDS */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .overview-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .overview-card-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .overview-card-body {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .role-list { list-style: none; }
+  .role-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .role-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .base-url {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-top: 8px;
+    display: inline-block;
+  }
+
+  /* SCROLLBAR */
+  aside::-webkit-scrollbar { width: 4px; }
+  aside::-webkit-scrollbar-track { background: transparent; }
+  aside::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+  main::-webkit-scrollbar { width: 6px; }
+  main::-webkit-scrollbar-track { background: transparent; }
+  main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* DIVIDER */
+  hr.subtle { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  .full-width-block { grid-column: 1 / -1; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside>
+  <div class="sidebar-header">
+    <div class="logo">
+      Finance Manager
+      <span>API Reference v1.0</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Overview</div>
+    <a href="#overview" class="nav-link">Introduction</a>
+    <a href="#auth-model" class="nav-link">Authentication &amp; Roles</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Auth</div>
+    <a href="#auth-login" class="nav-link"><span class="nav-badge badge-post">POST</span>/login</a>
+    <a href="#auth-logout" class="nav-link"><span class="nav-badge badge-delete">DEL</span>/logout</a>
+    <a href="#auth-me" class="nav-link"><span class="nav-badge badge-get">GET</span>/me</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Users</div>
+    <a href="#users-list" class="nav-link"><span class="nav-badge badge-get">GET</span>/user</a>
+    <a href="#users-get" class="nav-link"><span class="nav-badge badge-get">GET</span>/user/:email</a>
+    <a href="#users-create" class="nav-link"><span class="nav-badge badge-post">POST</span>/user</a>
+    <a href="#users-create-viewer" class="nav-link"><span class="nav-badge badge-post">POST</span>/user/viewer</a>
+    <a href="#users-name" class="nav-link"><span class="nav-badge badge-put">PUT</span>/user/nameChange</a>
+    <a href="#users-role" class="nav-link"><span class="nav-badge badge-put">PUT</span>/user/roleChange</a>
+    <a href="#users-pass" class="nav-link"><span class="nav-badge badge-put">PUT</span>/user/passwordChange</a>
+    <a href="#users-delete" class="nav-link"><span class="nav-badge badge-delete">DEL</span>/user</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Records</div>
+    <a href="#rec-list" class="nav-link"><span class="nav-badge badge-get">GET</span>/records</a>
+    <a href="#rec-get" class="nav-link"><span class="nav-badge badge-get">GET</span>/records/:id</a>
+    <a href="#rec-create" class="nav-link"><span class="nav-badge badge-post">POST</span>/records</a>
+    <a href="#rec-update" class="nav-link"><span class="nav-badge badge-put">PUT</span>/records/:id</a>
+    <a href="#rec-delete" class="nav-link"><span class="nav-badge badge-delete">DEL</span>/records/:id</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Dashboard</div>
+    <a href="#dash-income" class="nav-link"><span class="nav-badge badge-get">GET</span>/total/income</a>
+    <a href="#dash-expense" class="nav-link"><span class="nav-badge badge-get">GET</span>/total/expense</a>
+    <a href="#dash-net" class="nav-link"><span class="nav-badge badge-get">GET</span>/total</a>
+    <a href="#dash-cat" class="nav-link"><span class="nav-badge badge-get">GET</span>/categories</a>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- HERO -->
+  <div class="hero" id="overview">
+    <div class="hero-eyebrow">Finance Manager</div>
+    <h1>API <em>Reference</em></h1>
+    <p class="hero-desc">
+      A RESTful Node.js + Express API for personal finance management. Supports role-based access control, JWT cookie authentication, and full CRUD for financial records.
+    </p>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Runtime</div>
+        <div class="meta-value">Node.js ESM</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Auth</div>
+        <div class="meta-value">JWT Cookie</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Database</div>
+        <div class="meta-value">MongoDB</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH MODEL -->
+  <div class="section" id="auth-model">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(79,255,176,0.08);">🔐</div>
+      <div>
+        <div class="section-title">Authentication &amp; Roles</div>
+        <div class="section-subtitle">JWT cookie-based sessions with role-based authorization</div>
+      </div>
+    </div>
+
+    <div class="overview-grid">
+      <div class="overview-card">
+        <div class="overview-card-title">Authentication Flow</div>
+        <div class="overview-card-body">
+          The API uses <strong>JWT tokens stored in an HTTP-only cookie</strong> named <code>token</code>. Tokens expire in <strong>2 minutes</strong>. To authenticate, call <code>POST /login</code>. The token is automatically sent with subsequent requests.
+        </div>
+        <div class="base-url">Localhost Base URL: http://localhost:{PORT}</div>
+        <div class="base-url">Vercel Base URL: http://localhost:{PORT}</div>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card-title">Roles</div>
+        <ul class="role-list">
+          <li><span class="role-dot" style="background:var(--admin)"></span><strong style="color:var(--admin)">admin</strong> — Full access. Create/delete users, manage records, change roles.</li>
+          <li><span class="role-dot" style="background:var(--analyst)"></span><strong style="color:var(--analyst)">analyst</strong> — Read-only access to records and dashboard.</li>
+          <li><span class="role-dot" style="background:var(--viewer)"></span><strong style="color:var(--viewer)">viewer</strong> — Can only delete their own account. Registered via public endpoint.</li>
+          <li><span class="role-dot" style="background:var(--public)"></span><strong style="color:var(--public)">public</strong> — No auth required (login, register viewer).</li>
+        </ul>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card-title">Standard Error Format</div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-lang">JSON</span></div>
+          <pre><span class="c-comment">// Validation errors (400)</span>
+[{ <span class="c-key">"msg"</span>: <span class="c-str">"Amount should not be empty."</span>,
+   <span class="c-key">"path"</span>: <span class="c-str">"amount"</span> }]
+
+<span class="c-comment">// Auth / not found errors</span>
+<span class="c-str">"Invalid credentials"</span>
+<span class="c-str">"Unauthorized"</span></pre>
+        </div>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card-title">Content Type</div>
+        <div class="overview-card-body">
+          All request bodies must be sent as <code>application/json</code>. All responses return <code>application/json</code>. Dates must be formatted as <code>YYYY-MM-DD</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== AUTH ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(91,156,246,0.08);">🗝️</div>
+      <div>
+        <div class="section-title">Authentication</div>
+        <div class="section-subtitle">Login, logout, and session info</div>
+      </div>
+    </div>
+
+    <!-- POST /login -->
+    <div class="endpoint" id="auth-login">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-post">POST</span>
+        <span class="endpoint-path">/login</span>
+        <span class="endpoint-summary">Authenticate user</span>
+        <span class="auth-pills"><span class="auth-pill pill-public">Public</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Authenticates a user with email and password. Sets a JWT token in an HTTP-only cookie on success. Returns <code>403</code> if the user is already logged in with a valid token.</p>
+        <div class="detail-label">Request Body</div>
+        <table class="param-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">email_id</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Valid email address</td></tr>
+            <tr><td class="param-name">password</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Min 8 characters</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-grid">
+          <div>
+            <div class="detail-label">Example Request</div>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-lang">JSON</span></div>
+              <pre>{
+  <span class="c-key">"email_id"</span>: <span class="c-str">"admin@company.com"</span>,
+  <span class="c-key">"password"</span>: <span class="c-str">"securepass123"</span>
+}</pre>
+            </div>
+          </div>
+          <div>
+            <div class="detail-label">Responses</div>
+            <div class="responses">
+              <div class="response-item"><span class="status-code s200">200</span><span class="response-desc"><code>"Login successful"</code> — cookie set</span></div>
+              <div class="response-item"><span class="status-code s400">400</span><span class="response-desc">Validation errors array</span></div>
+              <div class="response-item"><span class="status-code s401">401</span><span class="response-desc"><code>"Invalid credentials"</code></span></div>
+              <div class="response-item"><span class="status-code s403">403</span><span class="response-desc"><code>"User already logged in"</code></span></div>
+              <div class="response-item"><span class="status-code s500">500</span><span class="response-desc">Internal server error</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELETE /logout -->
+    <div class="endpoint" id="auth-logout">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-delete">DELETE</span>
+        <span class="endpoint-path">/logout</span>
+        <span class="endpoint-summary">End session</span>
+        <span class="auth-pills"><span class="auth-pill pill-auth">JWT Cookie</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Ends the user's session by verifying the JWT token, recording logout time, and clearing the <code>token</code> cookie. Returns <code>401</code> if no valid token is present.</p>
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span><span class="response-desc"><code>"Logged out successfully"</code> — cookie cleared</span></div>
+          <div class="response-item"><span class="status-code s401">401</span><span class="response-desc"><code>"Unauthorized"</code> or <code>"Token expired or invalid"</code></span></div>
+          <div class="response-item"><span class="status-code s500">500</span><span class="response-desc">Internal server error</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GET /me -->
+    <div class="endpoint" id="auth-me">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/me</span>
+        <span class="endpoint-summary">Get current user profile</span>
+        <span class="auth-pills"><span class="auth-pill pill-auth">JWT Cookie</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Returns the profile of the currently authenticated user based on the JWT token in the cookie.</p>
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span>
+            <span class="response-desc">User object: <code>{ email_id, name, role, login_time, logout_time, last_active }</code></span></div>
+          <div class="response-item"><span class="status-code s401">401</span><span class="response-desc"><code>"Unauthorized"</code> or <code>"Token expired or invalid"</code></span></div>
+          <div class="response-item"><span class="status-code s500">500</span><span class="response-desc">Internal server error</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== USERS ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(192,132,252,0.08);">👤</div>
+      <div>
+        <div class="section-title">Users</div>
+        <div class="section-subtitle">User management — creation, lookup, modification, deletion</div>
+      </div>
+    </div>
+
+    <!-- GET /user -->
+    <div class="endpoint" id="users-list">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/user</span>
+        <span class="endpoint-summary">List users (paginated)</span>
+        <span class="auth-pills"><span class="auth-pill pill-admin">Admin</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Returns a paginated list of all users. Optionally filter by role.</p>
+        <div class="detail-label">Query Parameters</div>
+        <table class="param-table">
+          <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">role</td><td class="param-type">string</td><td class="param-opt">Optional</td><td class="param-desc">Filter by role: <code>viewer</code>, <code>analyst</code>, <code>admin</code></td></tr>
+            <tr><td class="param-name">page</td><td class="param-type">integer</td><td class="param-opt">Optional</td><td class="param-desc">Page number (default: 1)</td></tr>
+            <tr><td class="param-name">limit</td><td class="param-type">integer</td><td class="param-opt">Optional</td><td class="param-desc">Records per page</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span><span class="response-desc">Paginated user list array</span></div>
+          <div class="response-item"><span class="status-code s400">400</span><span class="response-desc">Invalid role value</span></div>
+          <div class="response-item"><span class="status-code s401">401</span><span class="response-desc">Unauthorized</span></div>
+          <div class="response-item"><span class="status-code s403">403</span><span class="response-desc">Forbidden — requires admin role</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GET /user/:email_id -->
+    <div class="endpoint" id="users-get">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/user/:email_id</span>
+        <span class="endpoint-summary">Get user by email</span>
+        <span class="auth-pills"><span class="auth-pill pill-admin">Admin</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Retrieves a single user by their email address.</p>
+        <div class="detail-label">Path Parameters</div>
+        <table class="param-table">
+          <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">email_id</td><td class="param-type">string (email)</td><td class="param-req">Required</td><td class="param-desc">Valid email address of the target user</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span><span class="response-desc">User object: <code>{ email_id, name, role, login_time, logout_time }</code></span></div>
+          <div class="response-item"><span class="status-code s400">400</span><span class="response-desc">Invalid email format</span></div>
+          <div class="response-item"><span class="status-code s404">404</span><span class="response-desc"><code>"User not found"</code></span></div>
+          <div class="response-item"><span class="status-code s403">403</span><span class="response-desc">Forbidden — requires admin role</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST /user -->
+    <div class="endpoint" id="users-create">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-post">POST</span>
+        <span class="endpoint-path">/user</span>
+        <span class="endpoint-summary">Create user (admin)</span>
+        <span class="auth-pills"><span class="auth-pill pill-admin">Admin</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Creates a new user with any role. Only accessible by admins.</p>
+        <div class="detail-label">Request Body</div>
+        <table class="param-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">email_id</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Valid, unique email address</td></tr>
+            <tr><td class="param-name">name</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Non-empty display name</td></tr>
+            <tr><td class="param-name">password</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Min 8 characters</td></tr>
+            <tr><td class="param-name">role</td><td class="param-type">string</td><td class="param-opt">Optional</td><td class="param-desc"><code>viewer</code> | <code>analyst</code> | <code>admin</code> (defaults to <code>viewer</code>)</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-grid">
+          <div>
+            <div class="detail-label">Example Request</div>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-lang">JSON</span></div>
+              <pre>{
+  <span class="c-key">"email_id"</span>: <span class="c-str">"analyst@company.com"</span>,
+  <span class="c-key">"name"</span>: <span class="c-str">"Jane Doe"</span>,
+  <span class="c-key">"password"</span>: <span class="c-str">"securepass"</span>,
+  <span class="c-key">"role"</span>: <span class="c-str">"analyst"</span>
+}</pre>
+            </div>
+          </div>
+          <div>
+            <div class="detail-label">Responses</div>
+            <div class="responses">
+              <div class="response-item"><span class="status-code s201">201</span><span class="response-desc"><code>{ message: "User created successfully", user: {...} }</code></span></div>
+              <div class="response-item"><span class="status-code s400">400</span><span class="response-desc">Validation errors</span></div>
+              <div class="response-item"><span class="status-code s403">403</span><span class="response-desc">Forbidden — admin only</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST /user/viewer -->
+    <div class="endpoint" id="users-create-viewer">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-post">POST</span>
+        <span class="endpoint-path">/user/viewer</span>
+        <span class="endpoint-summary">Self-register as viewer</span>
+        <span class="auth-pills"><span class="auth-pill pill-public">Public</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Allows anyone to create a viewer account without authentication. The <code>role</code> is automatically set to <code>viewer</code> and cannot be overridden.</p>
+        <div class="detail-label">Request Body</div>
+        <table class="param-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">email_id</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Valid, unique email address</td></tr>
+            <tr><td class="param-name">name</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Non-empty display name</td></tr>
+            <tr><td class="param-name">password</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Min 8 characters</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s201">201</span><span class="response-desc"><code>{ message: "Viewer created successfully", user: {...} }</code></span></div>
+          <div class="response-item"><span class="status-code s400">400</span><span class="response-desc">Validation errors</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PUT /user/nameChange -->
+    <div class="endpoint" id="users-name">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-put">PUT</span>
+        <span class="endpoint-path">/user/nameChange</span>
+        <span class="endpoint-summary">Change own display name</span>
+        <span class="auth-pills"><span class="auth-pill pill-auth">Any authenticated</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Updates the display name of the currently authenticated user (resolved from the JWT cookie).</p>
+        <div class="detail-label">Request Body</div>
+        <table class="param-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">name</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">New non-empty display name</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span><span class="response-desc"><code>{ message: "Name changed successfully", user: {...} }</code></span></div>
+          <div class="response-item"><span class="status-code s400">400</span><span class="response-desc">Validation errors</span></div>
+          <div class="response-item"><span class="status-code s401">401</span><span class="response-desc">Unauthorized / token expired</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PUT /user/roleChange -->
+    <div class="endpoint" id="users-role">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-put">PUT</span>
+        <span class="endpoint-path">/user/roleChange</span>
+        <span class="endpoint-summary">Change a user's role</span>
+        <span class="auth-pills"><span class="auth-pill pill-admin">Admin</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Assigns a new role to any user identified by email. Only admins can perform this action.</p>
+        <div class="detail-label">Request Body</div>
+        <table class="param-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">email_id</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Email of the target user</td></tr>
+            <tr><td class="param-name">role</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc"><code>viewer</code> | <code>analyst</code> | <code>admin</code></td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span><span class="response-desc"><code>{ message: "Role changed successfully", user: {...} }</code></span></div>
+          <div class="response-item"><span class="status-code s400">400</span><span class="response-desc">Validation errors</span></div>
+          <div class="response-item"><span class="status-code s403">403</span><span class="response-desc">Forbidden — admin only</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PUT /user/passwordChange -->
+    <div class="endpoint" id="users-pass">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-put">PUT</span>
+        <span class="endpoint-path">/user/passwordChange</span>
+        <span class="endpoint-summary">Change own password</span>
+        <span class="auth-pills"><span class="auth-pill pill-auth">Any authenticated</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Updates the password of the currently authenticated user. The target user is resolved from the JWT cookie.</p>
+        <div class="detail-label">Request Body</div>
+        <table class="param-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">email_id</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Must match the authenticated user's email</td></tr>
+            <tr><td class="param-name">password</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">New password, min 8 characters</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span><span class="response-desc"><code>{ message: "Password changed successfully", user: {...} }</code></span></div>
+          <div class="response-item"><span class="status-code s400">400</span><span class="response-desc">Validation errors</span></div>
+          <div class="response-item"><span class="status-code s401">401</span><span class="response-desc">Token missing or expired</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELETE /user -->
+    <div class="endpoint" id="users-delete">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-delete">DELETE</span>
+        <span class="endpoint-path">/user</span>
+        <span class="endpoint-summary">Delete own account</span>
+        <span class="auth-pills"><span class="auth-pill pill-viewer">Viewer</span><span class="auth-pill pill-analyst">Analyst</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Allows <code>viewer</code> or <code>analyst</code> users to permanently delete their own account. Admins are excluded from this endpoint (they must use another admin to delete them). The user is identified from the JWT cookie.</p>
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span><span class="response-desc"><code>"User deleted successfully"</code></span></div>
+          <div class="response-item"><span class="status-code s401">401</span><span class="response-desc">Unauthorized / token invalid</span></div>
+          <div class="response-item"><span class="status-code s403">403</span><span class="response-desc">Forbidden — admin role not permitted</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== RECORDS ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,166,35,0.08);">📊</div>
+      <div>
+        <div class="section-title">Records</div>
+        <div class="section-subtitle">Financial transaction management — income and expense records</div>
+      </div>
+    </div>
+
+    <!-- GET /records -->
+    <div class="endpoint" id="rec-list">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/records</span>
+        <span class="endpoint-summary">List records (filtered, paginated)</span>
+        <span class="auth-pills"><span class="auth-pill pill-admin">Admin</span><span class="auth-pill pill-analyst">Analyst</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Returns a paginated, filterable list of financial records. Supports filtering by transaction type, category, and date range.</p>
+        <div class="detail-label">Query Parameters</div>
+        <table class="param-table">
+          <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">type</td><td class="param-type">string</td><td class="param-opt">Optional</td><td class="param-desc"><code>income</code> or <code>expense</code></td></tr>
+            <tr><td class="param-name">category</td><td class="param-type">string</td><td class="param-opt">Optional</td><td class="param-desc">Filter by category name</td></tr>
+            <tr><td class="param-name">startDate</td><td class="param-type">string</td><td class="param-opt">Optional</td><td class="param-desc">Filter from date — <code>YYYY-MM-DD</code></td></tr>
+            <tr><td class="param-name">endDate</td><td class="param-type">string</td><td class="param-opt">Optional</td><td class="param-desc">Filter to date — <code>YYYY-MM-DD</code></td></tr>
+            <tr><td class="param-name">page</td><td class="param-type">integer</td><td class="param-opt">Optional</td><td class="param-desc">Page number</td></tr>
+            <tr><td class="param-name">limit</td><td class="param-type">integer</td><td class="param-opt">Optional</td><td class="param-desc">Records per page</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-label">Example URL</div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-lang">URL</span></div>
+          <pre>GET /records?type=expense&category=food&startDate=2024-01-01&page=1&limit=20</pre>
+        </div>
+        <hr class="subtle" />
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span><span class="response-desc">Array of record objects with pagination info</span></div>
+          <div class="response-item"><span class="status-code s400">400</span><span class="response-desc">Invalid query parameter format</span></div>
+          <div class="response-item"><span class="status-code s403">403</span><span class="response-desc">Forbidden — requires analyst or admin</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GET /records/:id -->
+    <div class="endpoint" id="rec-get">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/records/:id</span>
+        <span class="endpoint-summary">Get single record</span>
+        <span class="auth-pills"><span class="auth-pill pill-admin">Admin</span><span class="auth-pill pill-analyst">Analyst</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Retrieves a single financial record by its numeric ID.</p>
+        <div class="detail-label">Path Parameters</div>
+        <table class="param-table">
+          <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">id</td><td class="param-type">number</td><td class="param-req">Required</td><td class="param-desc">Numeric record ID</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span><span class="response-desc">Record object: <code>{ _id, amount, type, category, date, notes }</code></span></div>
+          <div class="response-item"><span class="status-code s400">400</span><span class="response-desc"><code>"ID should be numeric."</code></span></div>
+          <div class="response-item"><span class="status-code s404">404</span><span class="response-desc"><code>"Record not found"</code></span></div>
+          <div class="response-item"><span class="status-code s403">403</span><span class="response-desc">Forbidden — requires analyst or admin</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST /records -->
+    <div class="endpoint" id="rec-create">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-post">POST</span>
+        <span class="endpoint-path">/records</span>
+        <span class="endpoint-summary">Create financial record</span>
+        <span class="auth-pills"><span class="auth-pill pill-admin">Admin</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Creates a new financial record (income or expense). All fields are required.</p>
+        <div class="detail-label">Request Body</div>
+        <table class="param-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">amount</td><td class="param-type">number</td><td class="param-req">Required</td><td class="param-desc">Transaction amount (numeric)</td></tr>
+            <tr><td class="param-name">type</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc"><code>income</code> or <code>expense</code></td></tr>
+            <tr><td class="param-name">category</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Category label (e.g. <code>food</code>, <code>salary</code>)</td></tr>
+            <tr><td class="param-name">date</td><td class="param-type">string</td><td class="param-req">Required</td><td class="param-desc">Transaction date — <code>YYYY-MM-DD</code></td></tr>
+            <tr><td class="param-name">notes</td><td class="param-type">string</td><td class="param-opt">Optional</td><td class="param-desc">Free-text notes</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-grid">
+          <div>
+            <div class="detail-label">Example Request</div>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-lang">JSON</span></div>
+              <pre>{
+  <span class="c-key">"amount"</span>: <span class="c-num">5000</span>,
+  <span class="c-key">"type"</span>: <span class="c-str">"income"</span>,
+  <span class="c-key">"category"</span>: <span class="c-str">"salary"</span>,
+  <span class="c-key">"date"</span>: <span class="c-str">"2024-03-01"</span>,
+  <span class="c-key">"notes"</span>: <span class="c-str">"March salary"</span>
+}</pre>
+            </div>
+          </div>
+          <div>
+            <div class="detail-label">Responses</div>
+            <div class="responses">
+              <div class="response-item"><span class="status-code s201">201</span><span class="response-desc"><code>{ message: "Record created successfully", record: {...} }</code></span></div>
+              <div class="response-item"><span class="status-code s400">400</span><span class="response-desc">Validation errors</span></div>
+              <div class="response-item"><span class="status-code s403">403</span><span class="response-desc">Forbidden — admin only</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PUT /records/:id -->
+    <div class="endpoint" id="rec-update">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-put">PUT</span>
+        <span class="endpoint-path">/records/:id</span>
+        <span class="endpoint-summary">Update record</span>
+        <span class="auth-pills"><span class="auth-pill pill-admin">Admin</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Partially updates an existing record. All body fields are optional — only include fields you want to change.</p>
+        <div class="detail-label">Path Parameters</div>
+        <table class="param-table">
+          <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">id</td><td class="param-type">number</td><td class="param-req">Required</td><td class="param-desc">Numeric record ID to update</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-label">Request Body (all optional)</div>
+        <table class="param-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">amount</td><td class="param-type">number</td><td class="param-desc">New transaction amount</td></tr>
+            <tr><td class="param-name">type</td><td class="param-type">string</td><td class="param-desc"><code>income</code> or <code>expense</code></td></tr>
+            <tr><td class="param-name">category</td><td class="param-type">string</td><td class="param-desc">New category label</td></tr>
+            <tr><td class="param-name">date</td><td class="param-type">string</td><td class="param-desc"><code>YYYY-MM-DD</code></td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span><span class="response-desc"><code>{ message: "Record updated successfully", record: {...} }</code></span></div>
+          <div class="response-item"><span class="status-code s400">400</span><span class="response-desc">Validation errors</span></div>
+          <div class="response-item"><span class="status-code s403">403</span><span class="response-desc">Forbidden — admin only</span></div>
+          <div class="response-item"><span class="status-code s404">404</span><span class="response-desc">Record not found</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELETE /records/:id -->
+    <div class="endpoint" id="rec-delete">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-delete">DELETE</span>
+        <span class="endpoint-path">/records/:id</span>
+        <span class="endpoint-summary">Delete record</span>
+        <span class="auth-pills"><span class="auth-pill pill-admin">Admin</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Permanently deletes a financial record by its numeric ID.</p>
+        <div class="detail-label">Path Parameters</div>
+        <table class="param-table">
+          <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">id</td><td class="param-type">number</td><td class="param-req">Required</td><td class="param-desc">Numeric ID of the record to delete</td></tr>
+          </tbody>
+        </table>
+        <hr class="subtle" />
+        <div class="detail-label">Responses</div>
+        <div class="responses">
+          <div class="response-item"><span class="status-code s200">200</span><span class="response-desc"><code>"Record deleted successfully"</code></span></div>
+          <div class="response-item"><span class="status-code s400">400</span><span class="response-desc"><code>"ID should be numeric."</code></span></div>
+          <div class="response-item"><span class="status-code s404">404</span><span class="response-desc"><code>"Record not found"</code></span></div>
+          <div class="response-item"><span class="status-code s403">403</span><span class="response-desc">Forbidden — admin only</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== DASHBOARD ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(79,255,176,0.08);">📈</div>
+      <div>
+        <div class="section-title">Dashboard</div>
+        <div class="section-subtitle">Aggregated financial summaries — read-only, all authenticated users</div>
+      </div>
+    </div>
+
+    <!-- GET /total/income -->
+    <div class="endpoint" id="dash-income">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/total/income</span>
+        <span class="endpoint-summary">Total income across all records</span>
+        <span class="auth-pills"><span class="auth-pill pill-auth">Any authenticated</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Returns the sum of all records where <code>type = "income"</code>.</p>
+        <div class="detail-grid">
+          <div>
+            <div class="detail-label">Example Response</div>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-lang">JSON</span></div>
+              <pre>{ <span class="c-key">"totalIncome"</span>: <span class="c-num">125000</span> }</pre>
+            </div>
+          </div>
+          <div>
+            <div class="detail-label">Responses</div>
+            <div class="responses">
+              <div class="response-item"><span class="status-code s200">200</span><span class="response-desc"><code>{ totalIncome: number }</code></span></div>
+              <div class="response-item"><span class="status-code s401">401</span><span class="response-desc">Unauthorized</span></div>
+              <div class="response-item"><span class="status-code s500">500</span><span class="response-desc">Internal server error</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GET /total/expense -->
+    <div class="endpoint" id="dash-expense">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/total/expense</span>
+        <span class="endpoint-summary">Total expense across all records</span>
+        <span class="auth-pills"><span class="auth-pill pill-auth">Any authenticated</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Returns the sum of all records where <code>type = "expense"</code>.</p>
+        <div class="detail-grid">
+          <div>
+            <div class="detail-label">Example Response</div>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-lang">JSON</span></div>
+              <pre>{ <span class="c-key">"totalExpense"</span>: <span class="c-num">47500</span> }</pre>
+            </div>
+          </div>
+          <div>
+            <div class="detail-label">Responses</div>
+            <div class="responses">
+              <div class="response-item"><span class="status-code s200">200</span><span class="response-desc"><code>{ totalExpense: number }</code></span></div>
+              <div class="response-item"><span class="status-code s401">401</span><span class="response-desc">Unauthorized</span></div>
+              <div class="response-item"><span class="status-code s500">500</span><span class="response-desc">Internal server error</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GET /total -->
+    <div class="endpoint" id="dash-net">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/total</span>
+        <span class="endpoint-summary">Net balance (income minus expenses)</span>
+        <span class="auth-pills"><span class="auth-pill pill-auth">Any authenticated</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Returns the net balance: the sum of all income records minus the sum of all expense records. Computed in a single MongoDB aggregation pipeline.</p>
+        <div class="detail-grid">
+          <div>
+            <div class="detail-label">Example Response</div>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-lang">JSON</span></div>
+              <pre>{ <span class="c-key">"netBalance"</span>: <span class="c-num">77500</span> }</pre>
+            </div>
+          </div>
+          <div>
+            <div class="detail-label">Responses</div>
+            <div class="responses">
+              <div class="response-item"><span class="status-code s200">200</span><span class="response-desc"><code>{ netBalance: number }</code></span></div>
+              <div class="response-item"><span class="status-code s401">401</span><span class="response-desc">Unauthorized</span></div>
+              <div class="response-item"><span class="status-code s500">500</span><span class="response-desc">Internal server error</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GET /categories -->
+    <div class="endpoint" id="dash-cat">
+      <div class="endpoint-header" onclick="toggle(this)">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/categories</span>
+        <span class="endpoint-summary">Income &amp; expense totals by category</span>
+        <span class="auth-pills"><span class="auth-pill pill-auth">Any authenticated</span></span>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="endpoint-body">
+        <p class="detail-desc">Returns an array of category-level aggregations. Each entry shows the total income and/or expense for that category. Fields are omitted when zero.</p>
+        <div class="detail-grid">
+          <div>
+            <div class="detail-label">Example Response</div>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-lang">JSON</span></div>
+              <pre>[
+  {
+    <span class="c-key">"category"</span>: <span class="c-str">"salary"</span>,
+    <span class="c-key">"totalIncome"</span>: <span class="c-num">120000</span>
+  },
+  {
+    <span class="c-key">"category"</span>: <span class="c-str">"food"</span>,
+    <span class="c-key">"totalExpense"</span>: <span class="c-num">18500</span>
+  },
+  {
+    <span class="c-key">"category"</span>: <span class="c-str">"freelance"</span>,
+    <span class="c-key">"totalIncome"</span>: <span class="c-num">5000</span>,
+    <span class="c-key">"totalExpense"</span>: <span class="c-num">2200</span>
+  }
+]</pre>
+            </div>
+          </div>
+          <div>
+            <div class="detail-label">Responses</div>
+            <div class="responses">
+              <div class="response-item"><span class="status-code s200">200</span><span class="response-desc">Array of <code>{ category, totalIncome?, totalExpense? }</code></span></div>
+              <div class="response-item"><span class="status-code s401">401</span><span class="response-desc">Unauthorized</span></div>
+              <div class="response-item"><span class="status-code s500">500</span><span class="response-desc">Internal server error</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function toggle(header) {
+    const endpoint = header.parentElement;
+    endpoint.classList.toggle('open');
+  }
+
+  // Highlight active nav link on scroll
+  const sections = document.querySelectorAll('[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
