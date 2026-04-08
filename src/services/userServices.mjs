@@ -46,7 +46,31 @@ export const getUserList = async (role, lim, page) => {
     if(role) {
         role = role.toLowerCase();
         return await paging(
-            User.find({ role }).select("-password"),
+            User.aggregate([
+                {
+                    $match: { role }
+                },
+                {
+                    $addFields: {
+                        isActive: {
+                            $cond: {
+                                if: { $eq: ["$logout_time", null] }, // If logout time is null
+                                then: false,                        // isActive = false
+                                else: {
+                                    $cond: {
+                                        if: { $lt: ["$$NOW", "$logout_time"] }, // If current time < logout time
+                                        then: true,                                // isActive = true
+                                        else: false                                // Else (current time > logout time), false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: { password: 0 }
+                }
+            ]),
             lim,
             page,
             User
@@ -54,14 +78,74 @@ export const getUserList = async (role, lim, page) => {
     }
     else {
         return await paging(
-            User.find().select("-password"),
+            User.aggregate([
+                {
+                    $addFields: {
+                        isActive: {
+                            $cond: {
+                                if: { $eq: ["$logout_time", null] }, // If logout time is null
+                                then: false,                        // isActive = false
+                                else: {
+                                    $cond: {
+                                        if: { $lt: ["$$NOW", "$logout_time"] }, // If current time < logout time
+                                        then: true,                                // isActive = true
+                                        else: false                                // Else (current time > logout time), false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: { password: 0 }
+                }
+            ]),
             lim,
             page,
             User
         );
     }
 }
-
+/*
+// This can be used in your dashboard or user list services
+const activeStatus = await User.aggregate([
+    { $match: { email_id: "target@example.com" } },
+    {
+        $project: {
+            _id: 0,
+            email_id: 1,
+            isActive: { 
+                $gt: ["$login_time", { $ifNull: ["$logout_time", new Date(0)] }] 
+            }
+        }
+    }
+]);
+*/
 export const getUser = async (email_id) => {
-    return await User.findOne({ email_id }).select("-password");
+    const result = User.aggregate([
+        {
+            $match: { email_id }
+        },
+        {
+            $addFields: {
+                isActive: {
+                    $cond: {
+                        if: { $eq: ["$logout_time", null] }, // If logout time is null
+                        then: false,                        // isActive = false
+                        else: {
+                            $cond: {
+                                if: { $lt: ["$$NOW", "$logout_time"] }, // If current time < logout time
+                                then: true,                                // isActive = true
+                                else: false                                // Else (current time > logout time), false
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            $project: { password: 0 }
+        }
+    ])
+    return result[0];
 }

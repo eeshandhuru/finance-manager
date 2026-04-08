@@ -29,6 +29,9 @@ const userSchema = new Schema({
         enum: roles,
         default: roles[0]
     },
+    isActive: {
+        type: Boolean
+    }
 });
 
 const User = model('User', userSchema, 'users');
